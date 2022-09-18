@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="dashboardContext" prefHeight="424.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thogakade.pos.controller.DashboardFormController">
+   <children>
+      <JFXButton layoutX="25.0" layoutY="62.0" onAction="#openCustomerFormOnAction" prefHeight="134.0" prefWidth="217.0" style="-fx-background-color: #2980b9; -fx-background-radius: 15px;" text="Customer Management" textFill="WHITE" />
+      <JFXButton layoutX="275.0" layoutY="62.0" onAction="#openItemFormOnAction" prefHeight="134.0" prefWidth="217.0" style="-fx-background-color: #d35400; -fx-background-radius: 15px;" text="Item Management" textFill="WHITE" />
+      <JFXButton layoutX="529.0" layoutY="62.0" onAction="#openOrderDetailsFormOnAction" prefHeight="134.0" prefWidth="217.0" style="-fx-background-color: #34495e; -fx-background-radius: 15px;" text="Order Details" textFill="WHITE" />
+      <JFXButton layoutX="25.0" layoutY="217.0" onAction="#openPlaceOrderFormOnAction" prefHeight="134.0" prefWidth="719.0" style="-fx-background-color: #16a085; -fx-background-radius: 15px;" text="Place Order" textFill="WHITE" />
+      <Label layoutX="25.0" layoutY="389.0" text="Developed by: Ayesh" />
+      <Label layoutX="648.0" layoutY="389.0" text="Version: 1.0.0" />
+      <Label layoutX="32.0" layoutY="14.0" text="Thogakade">
+         <font>
+            <Font name="Bell MT Bold" size="27.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblDateTime" layoutX="597.0" layoutY="21.0" text="22:10:10" />
+   </children>
+</AnchorPane>
