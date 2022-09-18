@@ -9,29 +9,29 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="638.0" prefWidth="935.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thogakade.pos.controller.CustomerFormController">
+<AnchorPane fx:id="CustomerFromContext" prefHeight="638.0" prefWidth="935.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thogakade.pos.controller.CustomerFormController">
    <children>
-      <JFXButton layoutX="21.0" layoutY="27.0" prefHeight="45.0" prefWidth="129.0" style="-fx-background-color: #34495e; -fx-background-radius: 15px;" text="Back to Home" textFill="WHITE" />
+      <JFXButton layoutX="21.0" layoutY="27.0" onAction="#backToHomeOnAction" prefHeight="45.0" prefWidth="129.0" style="-fx-background-color: #34495e; -fx-background-radius: 15px;" text="Back to Home" textFill="WHITE" />
       <Label layoutX="359.0" layoutY="16.0" text="Customer Form">
          <font>
             <Font name="System Bold" size="30.0" />
          </font>
       </Label>
       <Separator layoutX="166.0" layoutY="82.0" prefHeight="5.0" prefWidth="634.0" />
-      <JFXButton layoutX="747.0" layoutY="27.0" prefHeight="45.0" prefWidth="158.0" style="-fx-background-color: #16a085; -fx-background-radius: 15px;" text="+ New Customer" textFill="WHITE" />
+      <JFXButton layoutX="747.0" layoutY="27.0" onAction="#newCustomerOnAction" prefHeight="45.0" prefWidth="158.0" style="-fx-background-color: #16a085; -fx-background-radius: 15px;" text="+ New Customer" textFill="WHITE" />
       <TextField fx:id="txtId" layoutX="21.0" layoutY="125.0" prefHeight="31.0" prefWidth="209.0" promptText="Customer ID" />
       <TextField fx:id="txtName" layoutX="249.0" layoutY="125.0" prefHeight="31.0" prefWidth="209.0" promptText="Name" />
       <TextField fx:id="txtAddress" layoutX="473.0" layoutY="125.0" prefHeight="31.0" prefWidth="209.0" promptText="Address" />
       <TextField fx:id="txtSalary" layoutX="700.0" layoutY="125.0" prefHeight="31.0" prefWidth="209.0" promptText="Salary" />
       <TextField fx:id="txtSearch" layoutX="21.0" layoutY="182.0" prefHeight="31.0" prefWidth="634.0" promptText=" Search Customer" />
-      <JFXButton layoutX="682.0" layoutY="174.0" onAction="#saveCustomerOnAction" prefHeight="45.0" prefWidth="224.0" style="-fx-background-color: #2980b9; -fx-background-radius: 15px;" text="Save Customer" textFill="WHITE" />
-      <TableView layoutX="21.0" layoutY="233.0" prefHeight="367.0" prefWidth="887.0">
+      <JFXButton fx:id="btnSaveCustomer" layoutX="682.0" layoutY="174.0" onAction="#saveCustomerOnAction" prefHeight="45.0" prefWidth="224.0" style="-fx-background-color: #2980b9; -fx-background-radius: 15px;" text="Save Customer" textFill="WHITE" />
+      <TableView fx:id="tblCustomer" layoutX="21.0" layoutY="233.0" prefHeight="367.0" prefWidth="887.0">
         <columns>
-          <TableColumn prefWidth="124.0" text="Id" />
-          <TableColumn prefWidth="209.0" text="Name" />
-            <TableColumn prefWidth="278.0" text="Address" />
-            <TableColumn prefWidth="133.0" text="Salary" />
-            <TableColumn prefWidth="142.0" text="Options" />
+          <TableColumn fx:id="colId" prefWidth="124.0" text="Id" />
+          <TableColumn fx:id="colName" prefWidth="209.0" text="Name" />
+            <TableColumn fx:id="colAddress" prefWidth="278.0" text="Address" />
+            <TableColumn fx:id="colSalary" prefWidth="133.0" text="Salary" />
+            <TableColumn fx:id="colOptions" prefWidth="142.0" text="Options" />
         </columns>
       </TableView>
    </children>
