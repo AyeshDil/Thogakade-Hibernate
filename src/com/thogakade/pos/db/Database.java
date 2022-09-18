@@ -1,5 +1,7 @@
 package com.thogakade.pos.db;
 
+import com.thogakade.pos.modal.Customer;
+
 import java.util.ArrayList;
 
 public class Database {
