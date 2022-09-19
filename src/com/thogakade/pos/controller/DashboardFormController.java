@@ -45,7 +45,8 @@ public class DashboardFormController {
     public void openOrderDetailsFormOnAction(ActionEvent actionEvent) {
     }
 
-    public void openPlaceOrderFormOnAction(ActionEvent actionEvent) {
+    public void openPlaceOrderFormOnAction(ActionEvent actionEvent) throws IOException {
+        setUi("PlaceOrderForm");
     }
 
     private void setUi(String ui) throws IOException {
