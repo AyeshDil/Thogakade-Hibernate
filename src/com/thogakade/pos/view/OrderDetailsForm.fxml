@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.thogakade.pos.controller.OrderDetailsFormController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane fx:id="orderDetailsFormContext" prefHeight="625.0" prefWidth="916.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thogakade.pos.controller.OrderDetailsFormController">
+   <children>
+      <TableView fx:id="tblOrderDetails" layoutX="42.0" layoutY="140.0" prefHeight="431.0" prefWidth="843.0">
+        <columns>
+          <TableColumn fx:id="colOrderId" prefWidth="134.0" text="Order Id" />
+          <TableColumn fx:id="colName" prefWidth="181.0" text="Customer" />
+            <TableColumn fx:id="colDate" prefWidth="188.0" text="Date" />
+            <TableColumn fx:id="colTotal" prefWidth="190.0" text="Total" />
+            <TableColumn fx:id="colOption" prefWidth="148.0" text="Option" />
+        </columns>
+      </TableView>
+      <JFXButton layoutX="42.0" layoutY="31.0" onAction="#backToHomeOnAction" prefHeight="45.0" prefWidth="129.0" style="-fx-background-color: #34495e; -fx-background-radius: 15px;" text="Back to Home" textFill="WHITE" />
+   </children>
 </AnchorPane>

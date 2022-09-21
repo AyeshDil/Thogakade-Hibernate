@@ -83,7 +83,7 @@ public class PlaceOrderFormController {
             String array[] = tempOrderId.split("-"); // [D,3]
             int tempNumber = Integer.parseInt(array[1]);
             int finalizeOrderId = tempNumber + 1;
-            txtOrderId.setText("D-"+finalizeOrderId);
+            txtOrderId.setText("D-" + finalizeOrderId);
         }
     }
 
@@ -125,7 +125,7 @@ public class PlaceOrderFormController {
 
     private void setDateAndOrderId() {
         // Set Date
-        /*Date date = new Date();
+        /* Date date = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String d = df.format(date);
         txtDate.setText(d);*/
@@ -135,13 +135,34 @@ public class PlaceOrderFormController {
     }
 
     public void backToHomeOnAction(ActionEvent actionEvent) throws IOException {
-        Stage stage= (Stage) placeOrderFormContext.getScene().getWindow();
+        Stage stage = (Stage) placeOrderFormContext.getScene().getWindow();
         stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/DashboardForm.fxml"))));
     }
+
+    private boolean checkQty(String code, int qty) {
+        for (Item i : Database.itemTable
+        ) {
+            if (code.equals(i.getCode())) {
+                if (i.getQtyOnHand() >= qty) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
 
     ObservableList<CartTM> obList = FXCollections.observableArrayList();
 
     public void addToCartOnAction(ActionEvent actionEvent) {
+
+        if (!checkQty(cmbItemCode.getValue(), Integer.parseInt(txtQty.getText()))) { // check invalid qty
+            new Alert(Alert.AlertType.WARNING, "Invalid Qty").show();
+            return;
+        }
+
         double unitPrice = Double.parseDouble(txtUnitPrice.getText());
         int qty = Integer.parseInt(txtQty.getText());
         double total = unitPrice * qty;
@@ -157,6 +178,12 @@ public class PlaceOrderFormController {
         } else {
             int tempQty = obList.get(row).getQty() + qty;
             double tempTotal = obList.get(row).getTotal() * tempQty;
+
+            if (!checkQty(cmbItemCode.getValue(), tempQty)) {  // check qty stock again in the list
+                new Alert(Alert.AlertType.WARNING, "Invalid Qty").show();
+                return;
+            }
+
             obList.get(row).setQty(tempQty);
             obList.get(row).setTotal(tempTotal);
             tblCart.refresh();
