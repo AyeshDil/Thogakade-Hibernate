@@ -1,6 +1,7 @@
 package com.thogakade.pos.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.thogakade.pos.db.DBConnection;
 import com.thogakade.pos.db.Database;
 import com.thogakade.pos.modal.Customer;
 import com.thogakade.pos.view.tm.CustomerTM;
@@ -70,10 +71,8 @@ public class CustomerFormController {
         String searchText="%"+text+"%";
         try {
             ObservableList<CustomerTM> tmList = FXCollections.observableArrayList();
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
             String sql = "SELECT * FROM Customer WHERE name LIKE ? || address LIKE ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
             statement.setString(1,searchText);
             statement.setString(2,searchText);
             ResultSet resultSet = statement.executeQuery();
@@ -98,10 +97,8 @@ public class CustomerFormController {
                     if (buttonType.get() == ButtonType.YES) {
 
                         try {
-                            Class.forName("com.mysql.cj.jdbc.Driver");
-                            Connection connection1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
                             String sql1 = "DELETE FROM Customer WHERE id=?";
-                            PreparedStatement statement1 = connection.prepareStatement(sql1);
+                            PreparedStatement statement1 = DBConnection.getInstance().getConnection().prepareStatement(sql1);
                             statement1.setString(1, tm.getId());
                             if (statement1.executeUpdate() > 0) {
                                 searchCustomer(searchText);
@@ -131,9 +128,9 @@ public class CustomerFormController {
             // Database
             try {
                 // 1 step - driver load ram
-                Class.forName("com.mysql.cj.jdbc.Driver");
+                //Class.forName("com.mysql.cj.jdbc.Driver");
                 // 2 step - create connection
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+                //Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
                 /*// 3 step - create statement
                 Statement statement = connection.createStatement();
                 // 4step - create query
@@ -144,7 +141,7 @@ public class CustomerFormController {
 
                 // Advance prepared statements
                 String sql = "INSERT INTO Customer VALUES(?,?,?,?)";
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
                 statement.setString(1, c1.getId());
                 statement.setString(2, c1.getName());
                 statement.setString(3, c1.getAddress());
@@ -167,10 +164,8 @@ public class CustomerFormController {
         } else {
             // update code
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
                 String sql = "UPDATE Customer SEt name=?, address=?, salary=? WHERE id=?";
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
                 statement.setString(1, c1.getName());
                 statement.setString(2, c1.getAddress());
                 statement.setDouble(3, c1.getSalary());

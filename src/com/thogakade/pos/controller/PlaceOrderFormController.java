@@ -1,5 +1,6 @@
 package com.thogakade.pos.controller;
 
+import com.thogakade.pos.db.DBConnection;
 import com.thogakade.pos.db.Database;
 import com.thogakade.pos.modal.Customer;
 import com.thogakade.pos.modal.Item;
@@ -76,14 +77,12 @@ public class PlaceOrderFormController {
     }
 
     private void setOrderId() {
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+        try {
             String sql = " SELECT orderId FROM `Order` ORDER BY orderId DESC LIMIT 1"; // after 10 not working... (UNSINEG)
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 // Generate id
                 String tempOrderId = resultSet.getString(1); // D-3
                 String array[] = tempOrderId.split("-"); // [D,3]
@@ -94,26 +93,24 @@ public class PlaceOrderFormController {
                 txtOrderId.setText("D-1");
             }
 
-        }catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     private void setItemDetails() {
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+        try {
             String sql = "SELECT * FROM Item WHERE code=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,cmbItemCode.getValue());
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
+            statement.setString(1, cmbItemCode.getValue());
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 txtDescription.setText(resultSet.getString(2));
                 txtUnitPrice.setText(String.valueOf(resultSet.getDouble(3)));
                 txtQtyOnHand.setText(String.valueOf(resultSet.getInt(4)));
             }
 
-        } catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -122,20 +119,18 @@ public class PlaceOrderFormController {
 
     private void setCustomerDetails() {
 
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+        try {
             String sql = "SELECT * FROM Customer WHERE id=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,cmbCustomerId.getValue());
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
+            statement.setString(1, cmbCustomerId.getValue());
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 txtName.setText(resultSet.getString(2));
                 txtAddress.setText(resultSet.getString(3));
                 txtSalary.setText(String.valueOf(resultSet.getDouble(4)));
             }
 
-        } catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -143,42 +138,38 @@ public class PlaceOrderFormController {
 
     private void loadAllItemCode() {
 
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+        try {
             String sql = "SELECT code FROM Item";
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             ArrayList<String> idList = new ArrayList<>();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 idList.add(resultSet.getString(1));
             }
             ObservableList<String> obList = FXCollections.observableArrayList(idList);
             cmbItemCode.setItems(obList);
 
-        } catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     private void loadAllCustomerId() {
 
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+        try {
             String sql = "SELECT id FROM Customer";
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             ArrayList<String> idList = new ArrayList<>();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 idList.add(resultSet.getString(1));
             }
             ObservableList<String> obList = FXCollections.observableArrayList(idList);
             cmbCustomerId.setItems(obList);
 
-        } catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -202,11 +193,9 @@ public class PlaceOrderFormController {
     private boolean checkQty(String code, int qty) {
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
             String sql = "SELECT qtyOnHand FROM Item WHERE code=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,code);
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
+            statement.setString(1, code);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -219,7 +208,7 @@ public class PlaceOrderFormController {
             }
 
 
-        }catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -317,7 +306,7 @@ public class PlaceOrderFormController {
         lblTotal.setText(String.valueOf(total));
     }
 
-    public void placeOrderOnAction(ActionEvent actionEvent) {
+    public void placeOrderOnAction(ActionEvent actionEvent) throws SQLException {
         if (obList.isEmpty()) return;
         ArrayList<ItemDetails> details = new ArrayList<>();
         for (CartTM tm : obList
@@ -330,52 +319,61 @@ public class PlaceOrderFormController {
                 cmbCustomerId.getValue(), details
         );
 
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+        // Place order
+        Connection con = null;
+        try {
+
+            con = DBConnection.getInstance().getConnection();
+            con.setAutoCommit(false);
+
             String sql = " INSERT `Order` VALUES (?,?,?,?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = con.prepareStatement(sql);
             statement.setString(1, order.getOrderId());
             statement.setString(2, txtDate.getText());
             statement.setDouble(3, order.getTotalCost());
             statement.setString(4, order.getCustomer());
-            boolean isSaved = statement.executeUpdate()>0;
+            boolean isSaved = statement.executeUpdate() > 0;
 
-            if (isSaved){ // if saved
+            if (isSaved) { // if saved
                 boolean isAllUpdated = updateQty(details);
-                if (isAllUpdated){ // if all updated
-                    new Alert(Alert.AlertType.CONFIRMATION,"Order placed").show();
+                if (isAllUpdated) { // if all updated
+                    con.commit();
+                    new Alert(Alert.AlertType.CONFIRMATION, "Order placed").show();
                     clearAll();
                 } else { // if not all updated
+                    con.setAutoCommit(true);
+                    con.rollback();
                     new Alert(Alert.AlertType.WARNING, "Try again").show();
                 }
-            }else{ // if not saved
+            } else { // if not saved
+                con.setAutoCommit(true);
+                con.rollback();
                 new Alert(Alert.AlertType.WARNING, "Try again").show();
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            con.setAutoCommit(true);
         }
     }
 
     private boolean updateQty(ArrayList<ItemDetails> details) {
-        try{
-            for (ItemDetails d: details
+        try {
+            for (ItemDetails d : details
             ) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
                 String sql = " INSERT `Order Details` VALUES (?,?,?,?)";
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
                 statement.setString(1, d.getCode());
                 statement.setString(2, txtOrderId.getText());
                 statement.setDouble(3, d.getUnitPrice());
                 statement.setInt(4, d.getQty());
 
-                boolean isOrderDetailsSaved =  statement.executeUpdate()>0;
+                boolean isOrderDetailsSaved = statement.executeUpdate() > 0;
 
-                if (isOrderDetailsSaved){ // if order details saved
+                if (isOrderDetailsSaved) { // if order details saved
                     boolean isQtyUpdated = update(d);
-                    if (!isQtyUpdated){
+                    if (!isQtyUpdated) {
                         return false;
                     }
                 } else {
@@ -384,7 +382,7 @@ public class PlaceOrderFormController {
 
 
             }
-        } catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -392,15 +390,13 @@ public class PlaceOrderFormController {
     }
 
     private boolean update(ItemDetails d) {
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "1234");
+        try {
             String sql = "UPDATE Item SET qtyOnHand=(qtyOnHand-?) WHERE code=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1,d.getQty());
-            statement.setString(2,d.getCode());
-            return statement.executeUpdate()>0;
-        } catch (SQLException | ClassNotFoundException e){
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
+            statement.setInt(1, d.getQty());
+            statement.setString(2, d.getCode());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return false;
         }

@@ -1,5 +1,7 @@
 package com.thogakade.pos.controller;
 
+import com.mysql.cj.xdevapi.PreparableStatement;
+import com.thogakade.pos.db.DBConnection;
 import com.thogakade.pos.db.Database;
 import com.thogakade.pos.modal.ItemDetails;
 import com.thogakade.pos.modal.Order;
@@ -16,6 +18,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ItemDetailsFormController {
     public AnchorPane itemDetailsContext;
@@ -33,23 +38,32 @@ public class ItemDetailsFormController {
     }
 
     public void loadOrderDetails(String id){
-        for (Order o:Database.orderTable
-             ) {
-            if (o.getOrderId().equals(id)){
-                ObservableList<ItemDetailsTM> tmList = FXCollections.observableArrayList();
-                for (ItemDetails d:o.getItemDetails()
-                     ) {
-                    double tempUnitPrice = d.getUnitPrice();
-                    int tempQty = d.getQty();
-                    double tempTotal = tempQty* tempUnitPrice;
-                    tmList.add(new ItemDetailsTM(
-                            d.getCode(),d.getUnitPrice(),d.getQty(), tempTotal
-                    ));
-                }
-                tblItems.setItems(tmList);
-                return;
+
+        try {
+            String sql ="SELECT o.orderId, d.itemCode, d.orderId, d.unitPrice, d.qty " +
+                    "FROM `Order` o Inner JOIN `Order Details` d ON o.orderId=d.orderId AND o.orderId=?";
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
+            statement.setString(1,id);
+            ResultSet resultSet = statement.executeQuery();
+
+            ObservableList<ItemDetailsTM> tmList = FXCollections.observableArrayList();
+            while (resultSet.next()){
+                double tempUnitPrice = resultSet.getDouble(4);
+                int tempQty = resultSet.getInt(5);
+                double tempTotal = tempQty* tempUnitPrice;
+                tmList.add(new ItemDetailsTM(
+                        resultSet.getString(2),
+                        tempUnitPrice,
+                        tempQty,
+                        tempTotal
+                ));
             }
+            tblItems.setItems(tmList);
+
+        } catch (SQLException | ClassNotFoundException e){
+            e.printStackTrace();
         }
+
     }
 
     public void backToHomeOnAction(ActionEvent actionEvent) throws IOException {
