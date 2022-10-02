@@ -1,4 +1,4 @@
-package com.thogakade.pos.modal;
+package com.thogakade.pos.entity;
 
 public class Item {
     private String code;

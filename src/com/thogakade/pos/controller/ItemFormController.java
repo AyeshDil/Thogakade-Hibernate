@@ -1,11 +1,15 @@
 package com.thogakade.pos.controller;
 
 import com.jfoenix.controls.JFXButton;
-import com.thogakade.pos.db.DBConnection;
-import com.thogakade.pos.db.Database;
-import com.thogakade.pos.modal.Customer;
-import com.thogakade.pos.modal.Item;
-import com.thogakade.pos.view.tm.CustomerTM;
+import com.thogakade.pos.bo.BoFactory;
+import com.thogakade.pos.bo.BoTypes;
+import com.thogakade.pos.bo.custom.ItemBo;
+import com.thogakade.pos.dao.DaoFactory;
+import com.thogakade.pos.dao.DaoTypes;
+import com.thogakade.pos.dao.custom.ItemDao;
+import com.thogakade.pos.dao.custom.impl.ItemDaoImpl;
+import com.thogakade.pos.dto.ItemDto;
+import com.thogakade.pos.entity.Item;
 import com.thogakade.pos.view.tm.ItemTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +23,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class ItemFormController {
@@ -35,6 +40,8 @@ public class ItemFormController {
     public TableColumn colUnitPrice;
     public TableColumn colQtyOnHand;
     public TableColumn colOptions;
+
+    private ItemBo itemBo = BoFactory.getInstance().getBo(BoTypes.ITEM);
 
     private String searchText = "";
 
@@ -81,17 +88,16 @@ public class ItemFormController {
         String searchText = "%" + text + "%";
         try {
             ObservableList<ItemTM> tmList = FXCollections.observableArrayList();
-            String sql = "SELECT * FROM Item WHERE description LIKE ?";
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-            statement.setString(1, searchText);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
+
+            ArrayList<ItemDto> iList = itemBo.searchItems(searchText);
+
+            for(ItemDto i: iList) {
                 Button btn = new Button("Delete");
                 ItemTM tm = new ItemTM(
-                        resultSet.getString(1),
-                        resultSet.getString(2),
-                        resultSet.getDouble(3),
-                        resultSet.getInt(4),
+                        i.getCode(),
+                        i.getDescription(),
+                        i.getUnitPrice(),
+                        i.getQtyOnHand(),
                         btn);
                 tmList.add(tm);
 
@@ -104,11 +110,9 @@ public class ItemFormController {
 
                     if (buttonType.get() == ButtonType.YES) {
                         try {
-                            String sql1 = "DELETE FROM Item WHERE code=?";
-                            PreparedStatement statement1 = DBConnection.getInstance().getConnection().prepareStatement(sql1);
-                            statement1.setString(1, tm.getCode());
+                            boolean isItemDeleted = itemBo.deleteItem(searchText);
 
-                            if (statement1.executeUpdate() > 0) {
+                            if (isItemDeleted) {
                                 searchItem(searchText);
                                 new Alert(Alert.AlertType.CONFIRMATION, "Item deleted").show();
                             } else {
@@ -137,14 +141,13 @@ public class ItemFormController {
         if (btnSaveItem.getText().equalsIgnoreCase("Save Item")) {
             // save code
             try {
-                String sql = "INSERT INTO Item VALUES(?,?,?,?)";
-                PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-                statement.setString(1, i1.getCode());
-                statement.setString(2, i1.getDescription());
-                statement.setDouble(3, i1.getUnitPrice());
-                statement.setInt(4, i1.getQtyOnHand());
-
-                if (statement.executeUpdate() > 0) {
+                boolean isItemSaved = itemBo.saveItem(
+                        new ItemDto(txtCode.getText(),
+                                txtDescription.getText(),
+                                Double.parseDouble(txtUnitPrice.getText()),
+                                Integer.parseInt(txtQtyOnHand.getText()))
+                );
+                if (isItemSaved) {
                     searchItem(searchText);
                     clear();
                     new Alert(Alert.AlertType.CONFIRMATION, "Item Saved").show();
@@ -158,14 +161,13 @@ public class ItemFormController {
         } else {
             // update code
             try {
-                String sql = "UPDATE Item SET description=?, unitPrice=?, qtyOnHand=? WHERE code=?";
-                PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-                statement.setString(1, i1.getDescription());
-                statement.setDouble(2, i1.getUnitPrice());
-                statement.setInt(3, i1.getQtyOnHand());
-                statement.setString(4, i1.getCode());
-
-                if (statement.executeUpdate() > 0) {
+                boolean isItemUpdated = itemBo.updateItem(
+                        new ItemDto(txtCode.getText(),
+                                txtDescription.getText(),
+                                Double.parseDouble(txtUnitPrice.getText()),
+                                Integer.parseInt(txtQtyOnHand.getText()))
+                );
+                if (isItemUpdated) {
                     searchItem(searchText);
                     clear();
                     new Alert(Alert.AlertType.INFORMATION, "Item updated").show();

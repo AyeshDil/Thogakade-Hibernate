@@ -1,9 +1,6 @@
 package com.thogakade.pos.controller;
 
 import com.thogakade.pos.db.DBConnection;
-import com.thogakade.pos.db.Database;
-import com.thogakade.pos.modal.Customer;
-import com.thogakade.pos.modal.Item;
 import com.thogakade.pos.modal.ItemDetails;
 import com.thogakade.pos.modal.Order;
 import com.thogakade.pos.view.tm.CartTM;

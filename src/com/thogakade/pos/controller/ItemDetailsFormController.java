@@ -1,10 +1,6 @@
 package com.thogakade.pos.controller;
 
-import com.mysql.cj.xdevapi.PreparableStatement;
 import com.thogakade.pos.db.DBConnection;
-import com.thogakade.pos.db.Database;
-import com.thogakade.pos.modal.ItemDetails;
-import com.thogakade.pos.modal.Order;
 import com.thogakade.pos.view.tm.ItemDetailsTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

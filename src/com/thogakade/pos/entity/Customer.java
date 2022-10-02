@@ -1,4 +1,4 @@
-package com.thogakade.pos.modal;
+package com.thogakade.pos.entity;
 
 public class Customer {
     private String id;
@@ -9,7 +9,7 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(String id, String name, String address, double salary) {
+    public Customer(String id, String name, String address, Double salary) {
         this.id = id;
         this.name = name;
         this.address = address;
