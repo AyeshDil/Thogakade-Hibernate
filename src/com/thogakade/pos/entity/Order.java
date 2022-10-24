@@ -1,14 +1,17 @@
 package com.thogakade.pos.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class Order {
     @Id
-    @Column(name = "order_id")
+    @Column(name = "order_code")
     private String orderId;
     private String date;
+    @Column(name = "total_cost")
     private double totalCost;
 
     // ---------------------------------
@@ -17,6 +20,8 @@ public class Order {
     private Customer customer;
 
     // ---------------------------------
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
+    private List<OrderDetails> details = new ArrayList<>();
 
     public Order() {
     }
@@ -25,6 +30,14 @@ public class Order {
         this.orderId = orderId;
         this.date = date;
         this.totalCost = totalCost;
+    }
+
+    public List<OrderDetails> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<OrderDetails> details) {
+        this.details = details;
     }
 
     public Customer getCustomer() {

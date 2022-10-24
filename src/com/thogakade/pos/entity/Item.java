@@ -1,9 +1,8 @@
 package com.thogakade.pos.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "item")
@@ -18,6 +17,13 @@ public class Item {
     @Column(name = "qty_on_hand", nullable = false)
     private int qtyOnHand;
 
+    // -------------------------------
+
+    @OneToMany(mappedBy = "item", cascade = {CascadeType.ALL})
+    private List<OrderDetails> details = new ArrayList<>();
+
+    // -------------------------------
+
     public Item() {
     }
 
@@ -26,6 +32,14 @@ public class Item {
         this.description = description;
         this.unitPrice = unitPrice;
         this.qtyOnHand = qtyOnHand;
+    }
+
+    public List<OrderDetails> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<OrderDetails> details) {
+        this.details = details;
     }
 
     public String getCode() {
